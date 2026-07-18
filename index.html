@@ -1,0 +1,1017 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Galaxy - Learn English!</title>
+    <style>
+        /* =========================================
+           UI/UX & GAMIFIED LAYOUT - Theme Variables
+           ========================================= */
+        :root {
+            --primary: #AEC6CF; /* Soft Blue */
+            --primary-dark: #8DB3C2;
+            --secondary: #98FF98; /* Mint Green */
+            --accent: #FDFD96; /* Sunflower Yellow */
+            --text: #333333; /* Dark Charcoal */
+            --bg: #F4F9F9;
+            --white: #FFFFFF;
+            
+            /* Feedback Colors */
+            --vibrant-green: #32CD32; /* Correct - Vibrant */
+            --soft-red: #FFB6C1; /* Incorrect - Soft Pastel Red */
+            --danger-text: #B22222; /* Darker red for text contrast */
+            --success-text: #006400; /* Dark green for text contrast */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           NAVIGATION & HEADER
+           ========================================= */
+        nav {
+            background-color: var(--primary);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background-color: var(--white);
+            border: 2px solid var(--text);
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0px var(--text);
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px var(--text);
+        }
+
+        #top-stats {
+            background-color: var(--text);
+            color: var(--white);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        /* =========================================
+           MAIN LAYOUT & CARDS
+           ========================================= */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 4px solid var(--primary);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        /* Buttons */
+        .action-btn {
+            background-color: var(--accent);
+            border: 3px solid var(--text);
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px var(--text);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 0px var(--text);
+            background-color: #FAFA6E;
+        }
+
+        .danger-btn {
+            background-color: var(--soft-red);
+            color: var(--danger-text);
+            border: 3px solid var(--danger-text);
+            box-shadow: 3px 3px 0px var(--danger-text);
+        }
+        
+        .danger-btn:hover {
+            background-color: #ff9aa2;
+            box-shadow: 5px 5px 0px var(--danger-text);
+        }
+
+        .topic-btn {
+            background-color: var(--secondary);
+            border: 3px solid var(--text);
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 4px 4px 0px var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 100px;
+        }
+
+        .topic-btn:hover {
+            background-color: var(--accent);
+            transform: scale(1.03) translateY(-3px);
+        }
+
+        .topic-btn.completed {
+            background-color: var(--primary);
+            border-color: var(--text);
+            color: var(--text);
+        }
+
+        /* =========================================
+           LEARN STATION DETAIL VIEW
+           ========================================= */
+        .pedagogical-note {
+            background-color: #FFF9C4; /* Light yellow highlight */
+            border-left: 6px solid #FFD54F;
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            line-height: 1.8;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .example-card {
+            background: var(--primary);
+            color: var(--text);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary-dark);
+            display: flex;
+            align-items: center;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .example-card::before {
+            content: '📌';
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        /* =========================================
+           GAME ZONE & QUIZ ENGINE
+           ========================================= */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            background-color: var(--white);
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            padding: 18px;
+            margin: 12px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            box-shadow: 2px 2px 0px var(--primary);
+        }
+
+        .quiz-option:hover {
+            background-color: var(--bg);
+            transform: translateX(5px);
+        }
+
+        /* Interactive Reward States */
+        .quiz-option.correct {
+            background-color: var(--vibrant-green) !important;
+            border-color: var(--success-text) !important;
+            color: var(--white);
+            box-shadow: 2px 2px 0px var(--success-text);
+            animation: pop 0.3s ease;
+        }
+
+        .quiz-option.wrong {
+            background-color: var(--soft-red) !important;
+            border-color: var(--danger-text) !important;
+            color: var(--danger-text);
+            box-shadow: 2px 2px 0px var(--danger-text);
+            animation: shake 0.4s ease;
+        }
+
+        #feedback-msg {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        /* =========================================
+           REPORT CARD
+           ========================================= */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 25px;
+            margin: 20px 0;
+            border: 3px solid var(--text);
+            overflow: hidden;
+            height: 40px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--vibrant-green);
+            width: 0%;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--white);
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .checklist-item {
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid var(--text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .status-completed {
+            background-color: var(--secondary);
+        }
+        
+        .status-progress {
+            background-color: var(--bg);
+        }
+
+        /* =========================================
+           MODAL & ANIMATIONS
+           ========================================= */
+        #welcome-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 25px;
+            text-align: center;
+            border: 6px solid var(--primary);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .avatar-selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .avatar-btn {
+            font-size: 3.5rem;
+            background: none;
+            border: 4px solid transparent;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s;
+            padding: 10px;
+        }
+
+        .avatar-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--bg);
+        }
+
+        .avatar-btn.selected {
+            border-color: var(--accent);
+            background-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid var(--text);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(174, 198, 207, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* CSS Celebration Particles */
+        .css-particle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 2rem;
+            z-index: 9999;
+            animation: floatUp 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.5) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-150px) scale(1.5) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal">
+        <div class="modal-content">
+            <h1 style="color: var(--text); margin-bottom: 15px;">Welcome to Grammar Galaxy! 🚀</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 15px;">What's your name, space explorer?</p>
+            <input type="text" id="student-name" placeholder="Enter your name..." autocomplete="off">
+            <p style="font-size: 1.2rem;">Choose your Avatar:</p>
+            <div class="avatar-selection">
+                <button class="avatar-btn selected" onclick="selectAvatar('🐶', this)">🐶</button>
+                <button class="avatar-btn" onclick="selectAvatar('🐱', this)">🐱</button>
+                <button class="avatar-btn" onclick="selectAvatar('🦊', this)">🦊</button>
+                <button class="avatar-btn" onclick="selectAvatar('🐰', this)">🐰</button>
+            </div>
+            <button class="action-btn" onclick="startGame()" style="width: 100%; font-size: 1.5rem;">Let's Play! 🌟</button>
+        </div>
+    </div>
+
+    <!-- Top Status Bar -->
+    <div id="top-stats">
+        <div class="stat-badge"><span id="display-avatar">🐶</span> <span id="display-name">Player</span></div>
+        <div class="stat-badge">⭐ <span id="display-stars">0</span> Stars</div>
+        <div class="stat-badge">⚡ <span id="display-xp">0</span> XP</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <button class="nav-btn active" onclick="switchTab('dashboard', this)">🏠 Dashboard</button>
+        <button class="nav-btn" onclick="switchTab('learn', this)">📚 Learn Station</button>
+        <button class="nav-btn" onclick="switchTab('game', this)">🎮 Game Zone</button>
+        <button class="nav-btn" onclick="switchTab('report', this)">🏆 My Report Card</button>
+    </nav>
+
+    <main>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active card">
+            <h1 style="text-align: center; color: var(--text); font-size: 2.5rem;">Welcome back, <span id="dash-name">Explorer</span>!</h1>
+            <p style="text-align: center; font-size: 1.3rem; margin-top: 15px;">Are you ready to master English Grammar? Choose a station above to begin your journey!</p>
+            <div style="text-align: center; margin-top: 2rem;">
+                <!-- SVGs or dynamic avatars could go here. Using a clean emoji graphic for local robustness -->
+                <div style="font-size: 8rem; margin-bottom: 10px;">🛸</div>
+                <h2>Your Mission Awaits!</h2>
+            </div>
+        </section>
+
+        <!-- Learn Station Section -->
+        <section id="learn" class="section card">
+            <h2 style="font-size: 2rem; border-bottom: 3px dashed var(--primary); padding-bottom: 10px;">📚 Learn Station</h2>
+            <p style="font-size: 1.2rem; margin-top: 10px;">Select a topic to read your pedagogical notes and visual examples!</p>
+            <div id="learn-grid" class="grid-layout">
+                <!-- Topics injected via JS -->
+            </div>
+        </section>
+
+        <!-- Active Note Viewer -->
+        <section id="note-viewer" class="section card">
+            <button class="action-btn" style="margin-bottom: 20px;" onclick="switchTab('learn', document.querySelectorAll('.nav-btn')[1])">🔙 Back to Topics</button>
+            <h2 id="note-title" style="font-size: 2.2rem; color: var(--text);">Title</h2>
+            
+            <div class="pedagogical-note">
+                <strong>Pedagogical Note:</strong><br>
+                <span id="note-content"></span>
+            </div>
+            
+            <h3 style="font-size: 1.5rem; margin-top: 25px;">Visual Examples:</h3>
+            <div id="note-examples" class="examples-grid">
+                <!-- Examples injected via JS -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 35px; border-top: 2px solid var(--bg); padding-top: 20px;">
+                <button class="action-btn" style="transform: scale(1.1);" onclick="switchToGameFromLearn()">🎮 Play Quiz for this Topic!</button>
+            </div>
+        </section>
+
+        <!-- Game Zone Section -->
+        <section id="game" class="section card">
+            <h2 style="font-size: 2rem; border-bottom: 3px dashed var(--primary); padding-bottom: 10px;">🎮 Game Zone</h2>
+            <p style="font-size: 1.2rem; margin-top: 10px;">Test your knowledge to earn XP and Stars! Turn buttons green to win.</p>
+            <div id="game-grid" class="grid-layout">
+                <!-- Topics injected via JS -->
+            </div>
+        </section>
+
+        <!-- Active Quiz Viewer -->
+        <section id="quiz-viewer" class="section card">
+            <button class="action-btn" style="margin-bottom: 20px;" onclick="switchTab('game', document.querySelectorAll('.nav-btn')[2])">🔙 Leave Quiz</button>
+            <div id="quiz-container">
+                <h2 id="quiz-topic-title" style="font-size: 2rem; color: var(--text);">Topic</h2>
+                
+                <div style="background: var(--bg); padding: 15px; border-radius: 12px; margin: 20px 0; font-size: 1.2rem; font-weight: bold; border: 2px solid var(--primary);">
+                    Question <span id="q-current" style="color: var(--primary-dark); font-size: 1.4rem;">1</span> of <span id="q-total">3</span>
+                </div>
+                
+                <h3 id="quiz-question" style="font-size: 1.6rem; margin-bottom: 25px; line-height: 1.4;">Question text?</h3>
+                
+                <div id="quiz-options">
+                    <!-- Options injected via JS -->
+                </div>
+                
+                <div id="feedback-msg"></div>
+                
+                <button id="next-q-btn" class="action-btn" style="display: none; margin-top: 25px; width: 100%; font-size: 1.4rem;" onclick="nextQuestion()">Next Question ➡️</button>
+            </div>
+            
+            <!-- Quiz Results -->
+            <div id="quiz-results" style="display: none; text-align: center; padding: 2rem 0;">
+                <h2 style="font-size: 3rem; margin-bottom: 15px;">Quiz Complete! 🎉</h2>
+                <div id="quiz-score-text" style="font-size: 1.5rem; margin: 25px 0; line-height: 1.8;"></div>
+                <button class="action-btn" onclick="switchTab('game', document.querySelectorAll('.nav-btn')[2])">Return to Game Zone</button>
+            </div>
+        </section>
+
+        <!-- Report Card Section -->
+        <section id="report" class="section card">
+            <h2 style="font-size: 2.2rem; text-align: center; margin-bottom: 10px;">🏆 My Report Card</h2>
+            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 25px;">Track your journey through the Grammar Galaxy!</p>
+            
+            <div style="background: var(--bg); padding: 25px; border-radius: 15px; border: 3px solid var(--primary); margin-bottom: 30px;">
+                <h3 style="font-size: 1.5rem;">Curriculum Progress</h3>
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar">0%</div>
+                </div>
+                <p id="progress-text" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px;">0 out of 10 Modules Completed</p>
+            </div>
+
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Mastery Checklist:</h3>
+            <div id="report-checklist" class="grid-layout" style="grid-template-columns: 1fr; gap: 15px; margin-top: 0;">
+                <!-- Checklist injected via JS -->
+            </div>
+
+            <div style="margin-top: 40px; text-align: center; border-top: 2px dashed #ccc; padding-top: 25px;">
+                <h4 style="margin-bottom: 10px; color: #666;">Need to start over?</h4>
+                <button class="action-btn danger-btn" onclick="resetProgress()">⚠️ Reset Progress</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // =========================================
+        // 1. ARCHITECTURE & SCALABLE DATABASE
+        // =========================================
+        const grammarDatabase = {
+          t1_nouns: {
+            title: "1. Nouns (Common vs. Proper)",
+            note: "Common Nouns are everyday names for general people, animals, places, or things (boy, cat, school). Proper Nouns are specific names for a particular person, place, or day and MUST always start with a Capital Letter (Ahmad, Malaysia, Monday)!",
+            examples: ["boy -> Ahmad", "country -> Malaysia", "cat -> Tom", "day -> Monday", "school -> SK Taman Rose"],
+            quizzes: [
+              { q: "Which word is a Proper Noun?", o: ["city", "London", "town"], a: "London", ex: "Specific name of a city." },
+              { q: "Identify the common noun: 'Zuki feeds his puppy.'", o: ["Zuki", "feeds", "puppy"], a: "puppy", ex: "General name for an animal." },
+              { q: "Choose the correct text.", o: ["We live in malaysia.", "We live in Malaysia."], a: "We live in Malaysia.", ex: "Countries need capital letters." }
+            ]
+          },
+          t2_pronouns: {
+            title: "2. Pronouns (Replacing Nouns)",
+            note: "Pronouns are words used to replace nouns so we don't repeat the same names. Subject Pronouns (I, You, He, She, It, We, They) do the action. Possessive Pronouns (My/Mine, Your/Yours, His, Her/Hers) show who owns something.",
+            examples: ["Ali is a boy. -> He is a boy.", "The cat is sleeping. -> It is sleeping.", "This is my book. -> This book is mine.", "Sarah and I are friends. -> We are friends.", "The children are playing. -> They are playing."],
+            quizzes: [
+              { q: "Replace the underlined words: '<u>Abu and Raju</u> are running.'", o: ["We", "They", "He"], a: "They", ex: "Abu and Raju means more than one person." },
+              { q: "This pen belongs to Sarah. It is ____ pen.", o: ["his", "her", "hers"], a: "her", ex: "Use 'her' before a noun for girls." },
+              { q: "____ am a primary school student.", o: ["I", "He", "They"], a: "I", ex: "Always use 'am' with 'I'." }
+            ]
+          },
+          t3_articles: {
+            title: "3. Articles (A, An, The)",
+            note: "Use 'A' before singular nouns starting with consonant sounds (b, c, d, etc.). Use 'An' before singular nouns starting with vowel sounds (a, e, i, o, u). Use 'The' for specific things or things there is only one of (the Sun, the headmaster).",
+            examples: ["a book", "an orange", "a uniform (sounds like 'yu')", "an hour (silent 'h')", "the moon"],
+            quizzes: [
+              { q: "My father bought ___ expensive toy.", o: ["a", "an", "the"], a: "an", ex: "'Expensive' starts with a vowel sound 'e'." },
+              { q: "Look at ___ sky! It is turning dark.", o: ["a", "an", "the"], a: "the", ex: "There is only one sky, so it is specific." },
+              { q: "I can see ___ small bird on the fence.", o: ["a", "an", "the"], a: "a", ex: "'Small' starts with a consonant sound." }
+            ]
+          },
+          t4_singular_plural: {
+            title: "4. Singular vs. Plural Nouns",
+            note: "Singular means ONE. Plural means MORE THAN ONE. Rules: 1) Most words add '-s' (cats). 2) Words ending in -ch, -sh, -s, -x, -z add '-es' (boxes, benches). 3) Irregular words change completely (child -> children, foot -> feet)!",
+            examples: ["book -> books", "watch -> watches", "fox -> foxes", "child -> children", "mouse -> mice"],
+            quizzes: [
+              { q: "What is the plural form of 'brush'?", o: ["brushs", "brushes", "brushies"], a: "brushes", ex: "Words ending in -sh add '-es'." },
+              { q: "The three ____ are playing in the garden.", o: ["childs", "childrens", "children"], a: "children", ex: "Irregular plural of child is children." },
+              { q: "Be careful! There are two ____ on the table.", o: ["knifes", "knives", "knife"], a: "knives", ex: "Words ending in -fe change to -ves." }
+            ]
+          },
+          t5_verbs: {
+            title: "5. Verbs (Action Words)",
+            note: "Verbs are action words that show what a person, animal, or thing is doing. Examples include physical actions (run, jump, cook) and mental actions (think, love, know). Every complete sentence must have a verb!",
+            examples: ["The boys run fast.", "Mother cooks dinner.", "I read every night.", "Birds fly in the sky.", "She smiles sweetly."],
+            quizzes: [
+              { q: "Identify the action verb: 'The clever student writes an essay.'", o: ["clever", "student", "writes"], a: "writes", ex: "'Writes' is the action being performed." },
+              { q: "Which word is NOT a verb?", o: ["swim", "beautiful", "sleep"], a: "beautiful", ex: "'Beautiful' is an adjective, not an action." },
+              { q: "Complete the sentence: 'Fish ____ in the water.'", o: ["swim", "fly", "walk"], a: "swim", ex: "Swimming is the natural action of a fish." }
+            ]
+          },
+          t6_adjectives: {
+            title: "6. Adjectives (Describing Words)",
+            note: "Adjectives describe or give more information about nouns (colors, sizes, feelings). Comparison Rules: Add '-er' for comparing two things (taller) and add '-est' for comparing three or more things (tallest).",
+            examples: ["a big house", "a happy boy", "tall -> taller -> tallest", "beautiful -> more beautiful", "good -> better -> best"],
+            quizzes: [
+              { q: "Identify the adjective: 'The big elephant ate a green leaf.'", o: ["elephant", "ate", "big"], a: "big", ex: "'Big' describes the size of the elephant." },
+              { q: "An airplane is ____ than a car.", o: ["fast", "faster", "fastest"], a: "faster", ex: "Comparing two things requires '-er'." },
+              { q: "Mount Kinabalu is the ____ mountain in Malaysia.", o: ["high", "higher", "highest"], a: "highest", ex: "The word 'the' before a blank indicates a superlative (-est)." }
+            ]
+          },
+          t7_adverbs: {
+            title: "7. Adverbs (Describing Actions)",
+            note: "Adverbs tell us more about verbs (how, when, or where an action happens). Most adverbs of manner tell us 'how' an action is done and are formed by adding '-ly' to an adjective (slow -> slowly, loud -> loudly).",
+            examples: ["He runs quickly.", "The baby cries loudly.", "She sings beautifully.", "We write neatly.", "They walk slowly."],
+            quizzes: [
+              { q: "Find the adverb: 'The tortoise walks slowly.'", o: ["tortoise", "walks", "slowly"], a: "slowly", ex: "'Slowly' explains how the tortoise walks." },
+              { q: "The students listened ____ to the principal's speech.", o: ["attentively", "attentive", "attention"], a: "attentively", ex: "An adverb is needed to describe the verb 'listened'." },
+              { q: "Change the adjective 'happy' into an adverb.", o: ["happys", "happily", "happier"], a: "happily", ex: "Replace '-y' with '-ily' to make it an adverb." }
+            ]
+          },
+          t8_prepositions: {
+            title: "8. Prepositions (Where & When)",
+            note: "Prepositions show the position or time of a noun. Prepositions of place tell us WHERE something is (in, on, under, behind, next to). Prepositions of time tell us WHEN something happens (at 8 o'clock, on Monday, in July).",
+            examples: ["The cat is under the chair.", "The book is on the desk.", "School starts at 7:30 a.m.", "We play football on Friday.", "My birthday is in August."],
+            quizzes: [
+              { q: "Where is the ball? 'The ball rolled ____ the table.'", o: ["under", "at", "on"], a: "under", ex: "A ball normally rolls underneath furniture." },
+              { q: "Our English class begins ___ 9:00 a.m.", o: ["on", "in", "at"], a: "at", ex: "Use 'at' for exact clock times." },
+              { q: "National Day is celebrated ___ August.", o: ["on", "in", "at"], a: "in", ex: "Use 'in' for months and years." }
+            ]
+          },
+          t9_sva: {
+            title: "9. Subject-Verb Agreement (SVA)",
+            note: "The Golden Rule! If the Subject is Singular (He, She, It, Ali, a dog), the Verb wants the 'S' (walks, eats). If the Subject is Plural (They, We, Ali and Baba, dogs) or special (I, You), the Verb does NOT want the 'S' (walk, eat).",
+            examples: ["The boy plays. / The boys play.", "She bakes. / They bake.", "The dog barks. / Dogs bark.", "He walks. / We walk.", "I read. / You read."],
+            quizzes: [
+              { q: "Every morning, the primary school boys _____ to school.", o: ["walks", "walk", "walking"], a: "walk", ex: "Plural subject (boys) takes a verb without 's'." },
+              { q: "Complete the sentence: 'She _____ her room every weekend.'", o: ["clean", "cleans", "cleaning"], a: "cleans", ex: "Singular subject (She) needs a verb with 's'." },
+              { q: "Which sentence is correct?", o: ["The stars shines brightly.", "The stars shine brightly."], a: "The stars shine brightly.", ex: "'Stars' is plural, so it matches with 'shine'." }
+            ]
+          },
+          t10_tenses: {
+            title: "10. Simple Present vs. Past Tense",
+            note: "Simple Present is for habits or facts (every day, always). Simple Past is for actions that already finished in the past (yesterday, last night). Regular past verbs add '-ed' (walked), but Irregular past verbs change completely (go -> went, eat -> ate)!",
+            examples: ["Every day I play. / Yesterday I played.", "He watches TV. / He watched TV just now.", "I eat rice. / I ate rice this morning.", "She goes to town. / She went to town yesterday.", "They sleep early. / They slept late last night."],
+            quizzes: [
+              { q: "Siti _____ a beautiful dress at the mall yesterday.", o: ["buy", "buys", "bought"], a: "bought", ex: "'Yesterday' shows a past action, so use 'bought'." },
+              { q: "He always _____ a glass of warm water before bedtime.", o: ["drink", "drinks", "drank"], a: "drinks", ex: "'Always' shows a present routine for a singular subject." },
+              { q: "What is the past tense form of the verb 'go'?", o: ["goed", "went", "gone"], a: "went", ex: "'Go' is an irregular verb that changes to 'went'." }
+            ]
+          }
+        };
+
+        // =========================================
+        // 2. USER STATE MANAGEMENT
+        // =========================================
+        let userState = {
+            name: "",
+            avatar: "🐶",
+            xp: 0,
+            stars: 0,
+            completedTopics: []
+        };
+
+        let currentActiveTopic = null;
+        let currentQuizIndex = 0;
+        let currentScore = 0;
+
+        // Initialization
+        window.onload = () => {
+            const savedData = localStorage.getItem('grammarGalaxyUser');
+            if (savedData) {
+                userState = JSON.parse(savedData);
+                document.getElementById('welcome-modal').style.display = 'none';
+                updateTopStats();
+                populateGrids();
+            }
+        };
+
+        let tempAvatar = "🐶";
+        function selectAvatar(emoji, btnElement) {
+            tempAvatar = emoji;
+            document.querySelectorAll('.avatar-btn').forEach(btn => btn.classList.remove('selected'));
+            btnElement.classList.add('selected');
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            if (!nameInput) {
+                alert("Please enter your name!");
+                return;
+            }
+            userState.name = nameInput;
+            userState.avatar = tempAvatar;
+            saveState();
+            
+            document.getElementById('welcome-modal').style.display = 'none';
+            updateTopStats();
+            populateGrids();
+        }
+
+        function saveState() {
+            localStorage.setItem('grammarGalaxyUser', JSON.stringify(userState));
+            updateTopStats();
+        }
+
+        function updateTopStats() {
+            document.getElementById('display-name').innerText = userState.name;
+            document.getElementById('dash-name').innerText = userState.name;
+            document.getElementById('display-avatar').innerText = userState.avatar;
+            document.getElementById('display-xp').innerText = userState.xp;
+            document.getElementById('display-stars').innerText = userState.stars;
+            updateReportCard();
+        }
+
+        // =========================================
+        // 3. UI RENDERING & NAVIGATION LOGIC
+        // =========================================
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+
+            if(btnElement) {
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+        }
+
+        function switchToGameFromLearn() {
+            switchTab('quiz-viewer', document.querySelectorAll('.nav-btn')[2]);
+            startQuiz(currentActiveTopic);
+        }
+
+        function populateGrids() {
+            const learnGrid = document.getElementById('learn-grid');
+            const gameGrid = document.getElementById('game-grid');
+            learnGrid.innerHTML = '';
+            gameGrid.innerHTML = '';
+
+            Object.keys(grammarDatabase).forEach(key => {
+                const topic = grammarDatabase[key];
+                const isCompleted = userState.completedTopics.includes(key);
+                
+                // Learn Button
+                const lBtn = document.createElement('button');
+                lBtn.className = 'topic-btn';
+                lBtn.innerHTML = `📖 ${topic.title}`;
+                lBtn.onclick = () => openNote(key);
+                learnGrid.appendChild(lBtn);
+
+                // Game Button
+                const gBtn = document.createElement('button');
+                gBtn.className = `topic-btn ${isCompleted ? 'completed' : ''}`;
+                gBtn.innerHTML = isCompleted ? `✅ ${topic.title} (Mastered)` : `🕹️ ${topic.title}`;
+                gBtn.onclick = () => startQuiz(key);
+                gameGrid.appendChild(gBtn);
+            });
+        }
+
+        function openNote(key) {
+            currentActiveTopic = key;
+            const topic = grammarDatabase[key];
+            document.getElementById('note-title').innerText = topic.title;
+            document.getElementById('note-content').innerText = topic.note;
+            
+            const grid = document.getElementById('note-examples');
+            grid.innerHTML = '';
+            topic.examples.forEach(ex => {
+                const div = document.createElement('div');
+                div.className = 'example-card';
+                div.innerText = ex;
+                grid.appendChild(div);
+            });
+
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('note-viewer').classList.add('active');
+        }
+
+        // =========================================
+        // 4. INTERACTIVE REWARD & QUIZ ENGINE
+        // =========================================
+        function startQuiz(key) {
+            currentActiveTopic = key;
+            currentQuizIndex = 0;
+            currentScore = 0;
+            
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('quiz-topic-title').innerText = "🕹️ " + grammarDatabase[key].title;
+            
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('quiz-viewer').classList.add('active');
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const topic = grammarDatabase[currentActiveTopic];
+            const qData = topic.quizzes[currentQuizIndex];
+            
+            document.getElementById('q-current').innerText = currentQuizIndex + 1;
+            document.getElementById('q-total').innerText = topic.quizzes.length;
+            document.getElementById('quiz-question').innerHTML = qData.q;
+            
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            
+            // Randomize options preserving the original array integrity
+            const shuffledOptions = [...qData.o].sort(() => Math.random() - 0.5);
+            
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, qData.a, qData.ex);
+                optionsDiv.appendChild(btn);
+            });
+
+            const feedback = document.getElementById('feedback-msg');
+            feedback.style.display = 'none';
+            feedback.className = '';
+            
+            document.getElementById('next-q-btn').style.display = 'none';
+        }
+
+        function checkAnswer(btn, selected, correct, explanation) {
+            // Lock options
+            document.querySelectorAll('.quiz-option').forEach(b => b.style.pointerEvents = 'none');
+            
+            const feedback = document.getElementById('feedback-msg');
+            feedback.style.display = 'block';
+            
+            if (selected === correct) {
+                btn.classList.add('correct');
+                feedback.style.backgroundColor = '#E8F5E9';
+                feedback.style.borderColor = varColor('--success-text');
+                feedback.style.color = varColor('--success-text');
+                feedback.innerHTML = `🌟 <strong>Correct!</strong> +10 XP, +1 Star!<br><span style="color: #333; margin-top:5px; display:block;"><em>${explanation}</em></span>`;
+                
+                userState.xp += 10;
+                userState.stars += 1;
+                currentScore++;
+                saveState();
+                
+                triggerCSSCelebration(btn);
+            } else {
+                btn.classList.add('wrong');
+                // Auto-highlight the correct answer so they can learn
+                document.querySelectorAll('.quiz-option').forEach(b => {
+                    if(b.innerHTML === correct || b.innerText === correct) {
+                        b.classList.add('correct');
+                    }
+                });
+                
+                feedback.style.backgroundColor = '#FFEBEE';
+                feedback.style.borderColor = varColor('--danger-text');
+                feedback.style.color = varColor('--danger-text');
+                feedback.innerHTML = `💡 <strong>Keep going! You are learning well!</strong><br><span style="color: #333; margin-top:5px; display:block;">The correct answer is <strong>'${correct}'</strong>.<br><em>Explanation: ${explanation}</em></span>`;
+            }
+
+            document.getElementById('next-q-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            const topic = grammarDatabase[currentActiveTopic];
+            currentQuizIndex++;
+            
+            if (currentQuizIndex < topic.quizzes.length) {
+                loadQuestion();
+            } else {
+                endQuiz(topic.quizzes.length);
+            }
+        }
+
+        function endQuiz(total) {
+            document.getElementById('quiz-container').style.display = 'none';
+            const results = document.getElementById('quiz-results');
+            results.style.display = 'block';
+            
+            let resultTxt = `You scored <strong>${currentScore}</strong> out of <strong>${total}</strong>!`;
+            
+            if (currentScore === total) {
+                if (!userState.completedTopics.includes(currentActiveTopic)) {
+                    userState.completedTopics.push(currentActiveTopic);
+                    saveState();
+                    populateGrids(); // Refresh UI buttons
+                }
+                resultTxt += "<br><br>🎉 <strong>Perfect Score! Module Mastered!</strong>";
+                for(let i=0; i<3; i++) {
+                    setTimeout(() => triggerCSSCelebration(document.body, true), i * 300);
+                }
+            } else {
+                resultTxt += "<br><br>💪 Keep practicing! Try again to get a perfect score and master the module.";
+            }
+            
+            document.getElementById('quiz-score-text').innerHTML = resultTxt;
+        }
+
+        // =========================================
+        // 5. REPORT CARD & REPLAYABILITY
+        // =========================================
+        function updateReportCard() {
+            const total = Object.keys(grammarDatabase).length;
+            const completed = userState.completedTopics.length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            const bar = document.getElementById('progress-bar');
+            bar.style.width = `${percentage}%`;
+            bar.innerText = `${percentage}%`;
+            
+            // Adjust text color inside bar for visibility if percentage is too low
+            if(percentage < 10) {
+                bar.style.color = 'transparent'; 
+            } else {
+                bar.style.color = 'var(--white)';
+            }
+
+            document.getElementById('progress-text').innerText = `${completed} out of ${total} Modules Completed`;
+            
+            const checklist = document.getElementById('report-checklist');
+            checklist.innerHTML = '';
+            
+            Object.keys(grammarDatabase).forEach(key => {
+                const isDone = userState.completedTopics.includes(key);
+                const item = document.createElement('div');
+                item.className = `checklist-item ${isDone ? 'status-completed' : 'status-progress'}`;
+                
+                const titleSpan = document.createElement('span');
+                titleSpan.innerText = grammarDatabase[key].title;
+                
+                const iconSpan = document.createElement('span');
+                iconSpan.innerText = isDone ? '✅ Completed' : '⏳ In Progress';
+                
+                item.appendChild(titleSpan);
+                item.appendChild(iconSpan);
+                checklist.appendChild(item);
+            });
+        }
+
+        function resetProgress() {
+            const confirmReset = confirm("Are you sure you want to erase all your Stars, XP, and completed modules? This cannot be undone.");
+            if(confirmReset) {
+                localStorage.removeItem('grammarGalaxyUser');
+                window.location.reload();
+            }
+        }
+
+        // Helper to grab CSS vars for JS manipulation
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        // =========================================
+        // 6. FLOATING CSS CELEBRATION
+        // =========================================
+        function triggerCSSCelebration(targetElement, isMassive = false) {
+            const emojis = ['🌟', '✨', '⭐', '🎉', '🎊'];
+            const count = isMassive ? 20 : 5;
+            
+            const rect = targetElement.getBoundingClientRect();
+            // Default center of screen if target is body
+            const startX = isMassive ? window.innerWidth / 2 : rect.left + rect.width / 2;
+            const startY = isMassive ? window.innerHeight / 2 : rect.top + rect.height / 2;
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'css-particle';
+                particle.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                // Randomize position spread
+                const spreadX = (Math.random() - 0.5) * (isMassive ? window.innerWidth : 200);
+                const spreadY = (Math.random() - 0.5) * (isMassive ? 300 : 50);
+                
+                particle.style.left = `${startX + spreadX}px`;
+                particle.style.top = `${startY + spreadY}px`;
+                
+                document.body.appendChild(particle);
+                
+                // Remove from DOM after animation
+                setTimeout(() => {
+                    particle.remove();
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
+
+```
